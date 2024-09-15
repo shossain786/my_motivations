@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, themeMode) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
             themeMode: themeMode,

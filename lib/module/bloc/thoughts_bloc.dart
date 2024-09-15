@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_motivations/module/data_module/database_helper.dart';
 import 'thoughts_event.dart';
@@ -10,9 +12,11 @@ class ThoughtsBloc extends Bloc<ThoughtsEvent, ThoughtsState> {
     on<FetchThoughts>(_onFetchThoughts);
     on<AddThought>(_onAddThought);
     on<DeleteThought>(_onDeleteThought);
+    on<EditThought>(_onEditThought); // Make sure this is added
   }
 
-  Future<void> _onFetchThoughts(FetchThoughts event, Emitter<ThoughtsState> emit) async {
+  Future<void> _onFetchThoughts(
+      FetchThoughts event, Emitter<ThoughtsState> emit) async {
     try {
       final thoughts = await dbHelper.getThoughts();
       emit(ThoughtsLoaded(thoughts));
@@ -21,18 +25,32 @@ class ThoughtsBloc extends Bloc<ThoughtsEvent, ThoughtsState> {
     }
   }
 
-  Future<void> _onAddThought(AddThought event, Emitter<ThoughtsState> emit) async {
+  Future<void> _onAddThought(
+      AddThought event, Emitter<ThoughtsState> emit) async {
     try {
-      await dbHelper.addThought(event.title, event.description, event.category, event.dateTime);
+      await dbHelper.addThought(
+          event.title, event.description, event.category, event.dateTime);
       add(FetchThoughts());
     } catch (e) {
       emit(ThoughtsError());
     }
   }
 
-  Future<void> _onDeleteThought(DeleteThought event, Emitter<ThoughtsState> emit) async {
+  Future<void> _onDeleteThought(
+      DeleteThought event, Emitter<ThoughtsState> emit) async {
     try {
       await dbHelper.deleteThought(event.id);
+      add(FetchThoughts());
+    } catch (e) {
+      emit(ThoughtsError());
+    }
+  }
+
+  Future<void> _onEditThought(
+      EditThought event, Emitter<ThoughtsState> emit) async {
+    try {
+      await dbHelper.updateThought(event.id, event.title, event.description,
+          event.category, event.dateTime);
       add(FetchThoughts());
     } catch (e) {
       emit(ThoughtsError());

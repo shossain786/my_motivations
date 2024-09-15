@@ -14,3 +14,13 @@ class DeleteThought extends ThoughtsEvent {
   final int id;
   DeleteThought(this.id);
 }
+
+class EditThought extends ThoughtsEvent {
+  final int id;
+  final String title;
+  final String description;
+  final String category;
+  final DateTime dateTime;
+
+  EditThought({required this.id, required this.title, required this.description, required this.category, required this.dateTime});
+}

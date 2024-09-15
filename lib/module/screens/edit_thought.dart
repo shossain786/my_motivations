@@ -5,22 +5,48 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_motivations/module/bloc/thoughts_bloc.dart';
 import 'package:my_motivations/module/bloc/thoughts_event.dart';
 
-class AddThoughtPage extends StatefulWidget {
-  const AddThoughtPage({super.key});
+class EditThoughtPage extends StatefulWidget {
+  final int id;
+  final String title;
+  final String description;
+  final String category;
+
+  const EditThoughtPage({
+    super.key,
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.category,
+  });
 
   @override
-  _AddThoughtPageState createState() => _AddThoughtPageState();
+  _EditThoughtPageState createState() => _EditThoughtPageState();
 }
 
-class _AddThoughtPageState extends State<AddThoughtPage> {
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  String selectedCategory = 'Akhlaq';
+class _EditThoughtPageState extends State<EditThoughtPage> {
+  late TextEditingController titleController;
+  late TextEditingController descriptionController;
+  late String selectedCategory;
+
+  @override
+  void initState() {
+    super.initState();
+    titleController = TextEditingController(text: widget.title);
+    descriptionController = TextEditingController(text: widget.description);
+    selectedCategory = widget.category;
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Thought')),
+      appBar: AppBar(title: const Text('Edit Thought')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -50,15 +76,18 @@ class _AddThoughtPageState extends State<AddThoughtPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                context.read<ThoughtsBloc>().add(AddThought(
-                      title: titleController.text,
-                      description: descriptionController.text,
-                      category: selectedCategory,
-                      dateTime: DateTime.now(),
-                    ));
+                context.read<ThoughtsBloc>().add(
+                      EditThought(
+                        id: widget.id,
+                        title: titleController.text,
+                        description: descriptionController.text,
+                        category: selectedCategory,
+                        dateTime: DateTime.now(),
+                      ),
+                    );
                 Navigator.pop(context);
               },
-              child: const Text('Add Thought'),
+              child: const Text('Save Changes'),
             ),
           ],
         ),
